@@ -25,8 +25,9 @@ def construct_blueprint():
         data = MovieComments.AllComments()
         print(data)
         DataDict = []
-        for Id, username, movie, comment, rating, doc in data:
-            DataDict.append(ChnageToDict(id=Id, comment=comment, username=username, doc=doc, rating=round(rating, 1)))
+        for Id, username, userProfile, movie, comment, rating, doc in data:
+            DataDict.append(ChnageToDict(id=Id, comment=comment, username=username, userProfile=userProfile, doc=doc,
+                                         rating=round(rating, 1)))
         print(DataDict)
         return Response(json.dumps(DataDict), mimetype='application/json')
 
