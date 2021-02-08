@@ -39,4 +39,18 @@ def construct_blueprint(uploadFolder):
         allUsers = admin.AllUsers(page=int(Page))
         return Response(response=json.dumps(allUsers), mimetype="application/json", status=200)
 
+    @AdminUser.route("/users/<token>/<Page>/<search>", methods=["GET"])
+    def SearchUser(token, Page, search):
+
+        tokenError = VerifyToken(token=token, secret=os.getenv('SECRET_KEY'))
+        if tokenError:
+            return Response(json.dumps({"error": {"text": tokenError, "token": False}}),
+                            mimetype='application/json', status=200)
+
+        token_data = dict(jwt.decode(str(token), os.getenv('SECRET_KEY'), algorithms=['HS256']))
+        admin = Admin(Id=token_data['id'])
+        allUsers = admin.AllUsers(page=int(Page), Search=search)
+        return Response(response=json.dumps(allUsers), mimetype="application/json", status=200)
+
+
     return AdminUser

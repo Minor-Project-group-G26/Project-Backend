@@ -105,13 +105,14 @@ class User(LoginUser, NewUser):
             return True
         return False
 
-
-    def NextUser(self, great):
+    def NextUser(self, great, Search=""):
         print(great)
+        if Search:
+            Search = f"and username like '{Search}%' "
         middle = "<"
         if int(great) == 1:
             middle = ">"
-        res = super().getOneData(f"select * from users where id {middle} {self._id}")
+        res = super().getOneData(f"select * from users where id {middle} {self._id} {Search}")
         print(res)
         if res:
             return True

@@ -58,12 +58,14 @@ class Admin(SqlDB):
 
     def NewPassword(self,bcrypt, newPassword=""):
         hash = bcrypt.generate_password_hash(newPassword).decode('utf8')
-        if super().UpdateDataAdvance(table='admin', FindKey={"id": self._id }, password=hash):
+        if super().UpdateDataAdvance(table='admin', FindKey={"id": self._id}, password=hash):
             return True
         return False
 
-    def AllUsers(self, page=0, limit=5):
-        data = super().GetDataAdvance(table='users')
+    def AllUsers(self, page=0, limit=5, Search=""):
+        if Search:
+            Search = f"where username like '{Search}%'"
+        data = super().getData("select * from users "+Search)
         print(data)
         User_df = pd.DataFrame(np.array(data),
             columns=["id", "name", "email", "phone", "profile", "plan_id", "plan_price", "plan_time", "plan_days",
@@ -71,7 +73,7 @@ class Admin(SqlDB):
         )
         print("Data All")
         st = page*limit
-        users_dict_list = User_df[st:st+limit].sort_values(by='id').to_dict(orient='records')
+        users_dict_list = User_df[st:st+limit].sort_values(by='name').to_dict(orient='records')
         print(users_dict_list)
         return users_dict_list
 

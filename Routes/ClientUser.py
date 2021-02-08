@@ -78,7 +78,13 @@ def construct_blueprint(uploadFolder):
         user = User(Id=Id)
         res = user.NextUser(great)
         print(res)
+        return Response(json.dumps({"success": res}), mimetype='application/json', status=200)
 
+    @ClientUser.route('/users/is/<Id>/<great>/<search>', methods=['GET'])
+    def SearchedUser(search, Id, great):
+        user = User(Id=Id)
+        res = user.NextUser(great, search)
+        print(res)
         return Response(json.dumps({"success": res}), mimetype='application/json', status=200)
 
     @ClientUser.route("/users/verify/plan/<token>", methods=['GET'])
