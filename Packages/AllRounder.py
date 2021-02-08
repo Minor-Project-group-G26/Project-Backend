@@ -17,9 +17,6 @@ class Movies:
         self.directors_table = pd.read_sql_query("SELECT * FROM directors", self.db)
         self.rating_data = pd.read_sql_query("SELECT movie_id, movie_rating FROM Data", self.db)
         self.rating_data.movie_rating.fillna(0, inplace=True)
-        self.movies_searching = pd.read_sql_query("SELECT movie_id,movies_name,movies_poster,movie_rating FROM Data",self.db)
-        self.genre_searching = pd.read_sql_query("SELECT movie_id,genres_name FROM movies", self.db)
-        
 
     # ------------------------- Method to Convert a list into String -------------------------------------------------#
     def array_to_str(self, a):
@@ -283,39 +280,37 @@ class FilterRecommend(Movies):
 
 # ------------------------------------------ Searching ---------------------------------------------------------------#
 
-class Searching(Movies):
+class Searching:
+    def __init__(self):
+        connection = sqlite3.connect('project.db')
+        self.movies = pd.read_sql_query("SELECT movie_id,movies_name,movies_poster,movie_rating FROM Data",connection)
+        self.genre = pd.read_sql_query("SELECT movie_id,genres_name FROM movies", connection)
 
     def MoviesSearch(self, ab):
-        a = self.movies_searching.loc[self.movies_searching.movies_name.str.contains(ab)].movie_id.values.tolist()
-        condition = self.movies_searching.movie_id.isin(a)
-        self.movies_searching.columns = ['Id', 'Title', 'Poster', 'Rate']
-        apple = self.movies_searching.loc[condition]
+        a = self.movies.loc[self.movies.movies_name.str.contains(ab)].movie_id.values.tolist()
+        condition = self.movies.movie_id.isin(a)
+        self.movies.columns = ['Id', 'Title', 'Poster', 'Rate']
+        apple = self.movies.loc[condition]
         apple.fillna(0, inplace=True)
         apple.Rate = apple.Rate.round(1)
         return apple.to_dict(orient='records')
 
     def GenresSearch(self, ab):
-        a = self.genre_searching.loc[self.genre_searching.genres_name.str.contains(ab, na=False)].movie_id.values.tolist()
-        z = self.movies_searching.movie_id.isin(a)
-        self.movies_searching.columns = ['Id', 'Title', 'Poster', 'Rate']
-        apple1 = self.movies_searching.loc[z]
+        a = self.genre.loc[self.genre.genres_name.str.contains(ab, na=False)].movie_id.values.tolist()
+        z = self.movies.movie_id.isin(a)
+        self.movies.columns = ['Id', 'Title', 'Poster', 'Rate']
+        apple1 = self.movies.loc[z]
         apple1.fillna(0, inplace=True)
         apple1.Rate = apple1.Rate.round(1)
         return apple1.to_dict(orient='records')
 
     def CardManual(self, card):
-        condition = self.movies_searching.movie_id.isin(card)
-        self.movies_searching.columns = ['Id', 'Title', 'Poster', 'Rate']
-        apple = self.movies_searching.loc[condition]
+        condition = self.movies.movie_id.isin(card)
+        self.movies.columns = ['Id', 'Title', 'Poster', 'Rate']
+        apple = self.movies.loc[condition]
         apple.fillna(0, inplace=True)
         apple.Rate = apple.Rate.round(1)
         return apple.to_dict(orient='records')
-
-    def Movies_DB_Search(self, ab):
-        a = self.movies_table.loc[self.movies_table.movies_name.str.contains(ab)].movie_id.values.tolist()
-        condition = self.movies_table.movie_id.isin(a)
-        self.movies_table.columns = ['Id', 'Title', 'Director', 'Actor', 'Category', 'Blurb', 'Poster', 'Link']
-        return self.movies_table.loc[condition].to_dict(orient='records')
 
 
 class Individual:

@@ -90,7 +90,7 @@ class SqlDB:
             print(e)
             return False
 
-    def GetDataAdvance(self, table='', connection={}, FindKey={}, get=[]):
+    def GetDataAdvance(self, table='', connection={}, FindKey={}, get=[] , order=[]):
         try:
             getData = "*"
             if get:
@@ -113,8 +113,11 @@ class SqlDB:
 
                     WhereData += f"{key}= {value}" if str(value).isdecimal() else f"{key}= '{value}'"
                     f = False
+            orderSql = ""
+            if order:
+                orderSql = f"order by {order[0]} {order[1]}"
 
-            sql = f"""select {getData} from {table} {connectData} {WhereData}"""
+            sql = f"""select {getData} from {table} {connectData} {WhereData} {orderSql}"""
             print(sql)
             self._mydb_cursor.execute(sql)
             data = list(self._mydb_cursor.fetchall())

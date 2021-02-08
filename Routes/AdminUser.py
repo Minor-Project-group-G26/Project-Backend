@@ -18,8 +18,8 @@ def construct_blueprint(uploadFolder):
 
     # .........................Admin Side
 
-    @AdminUser.route("/users/<token>/<ID>/<great>", methods=["GET", "DELETE"])
-    def AllUser(token, ID, great):
+    @AdminUser.route("/users/<token>/<Page>", methods=["GET", "DELETE"])
+    def AllUser(token, Page):
 
         tokenError = VerifyToken(token=token, secret=os.getenv('SECRET_KEY'))
         if tokenError:
@@ -33,12 +33,10 @@ def construct_blueprint(uploadFolder):
             print(fileRemove(folder=f"{uploadFolder}/users", filename=request.form['email']))
             print(request.form['id'])
             res =admin.DeleteUser(user_id=request.form['id'])
-            return Response(response=json.dumps({"success":res, "users": admin.AllUsers(ID, great)}),
+            return Response(response=json.dumps({"success": res}),
                             mimetype='application/json')
 
-        allUsers = admin.AllUsers(Id=ID, great=great)
-
-
+        allUsers = admin.AllUsers(page=int(Page))
         return Response(response=json.dumps(allUsers), mimetype="application/json", status=200)
 
     return AdminUser

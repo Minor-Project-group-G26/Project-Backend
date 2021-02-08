@@ -226,7 +226,7 @@ def getCount(count):
 @app.route('/movie/searchall/<query>', methods=['GET'])
 def SearchAll(query):
     Abc = Searching()
-    return Response(json.dumps(Abc.Movies_DB_Search(query)), mimetype='application/json')
+    return Response(json.dumps(Abc.MoviesSearch(query)), mimetype='application/json')
 
 
 if __name__ == '__main__':

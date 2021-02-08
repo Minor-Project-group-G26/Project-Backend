@@ -1,5 +1,8 @@
 import os
 
+import pandas as pd
+import numpy as np
+
 from Packages.SqlDB import SqlDB
 from Packages.modules import ChnageToDict, fileRemove
 
@@ -59,24 +62,18 @@ class Admin(SqlDB):
             return True
         return False
 
-    def AllUsers(self, Id, great):
-        print(great)
-        sql = f"select * from users where id >={Id} limit 5"
-        if int(great) ==0:
-            sql = f"select * from users where id <={Id} order by id desc limit 5"
-        users = list(super().getData(sql=sql))
-        users_dict_list= list()
-        users.sort(key= lambda x: x[0])
-        print(users)
-
-        for user in users:
-            print(user)
-
-            users_dict_list.append(ChnageToDict(id=user[0], name=user[1], email=user[2], phone=user[3],
-                                                profileImage=user[4], plan=user[5], start_date=user[8],
-                                                expire_date=user[9], doc=user[10], dou=user[11]))
+    def AllUsers(self, page=0, limit=5):
+        data = super().GetDataAdvance(table='users')
+        print(data)
+        User_df = pd.DataFrame(np.array(data),
+            columns=["id", "name", "email", "phone", "profile", "plan_id", "plan_price", "plan_time", "plan_days",
+                     "start_date", "expire_date", "doc", "dou"]
+        )
+        print("Data All")
+        st = page*limit
+        users_dict_list = User_df[st:st+limit].sort_values(by='id').to_dict(orient='records')
         print(users_dict_list)
-        return (users_dict_list)
+        return users_dict_list
 
     def DeleteUser(self, user_id):
 
