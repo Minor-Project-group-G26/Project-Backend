@@ -49,6 +49,41 @@ class Admin(SqlDB):
             print(e)
             return []
 
+
+    def FetchData(self):
+
+        data = super().GetDataAdvance(table='AdminView', FindKey={"id": self._id})
+        print(data)
+        if not data:
+            print({"error": {"text": f"fail to update"}})
+            return {"error": {"text": f"fail to update"}}
+        self._id = data[0]
+        self._name = data[1]
+        self._email = data[2]
+        self._phone = data[3]
+        self._profileImage = data[4]
+        return ChnageToDict(name=data[1], email=data[2], phone=data[3], profileImage=data[4], dou=data[-1])
+
+    def UpdateData(self, username="", phone="", profileImage=""):
+        print("update")
+        # data = db.getData(f"""Select phone from user where email='{email}'""")[0]
+        # data = super().GetDataAdvance(table='admin', FindKey={"phone": phone, 'id !': self._id}, get=['phone'])
+        # print(data)
+        # if data:
+        #     return "phone number exist"
+
+        sql = f"""update admin set username='{username}', phone='{phone}', profile_image='{profileImage}',
+               DOU=(CURRENT_TIMESTAMP) where id='{self._id}'"""
+        if profileImage == "":
+            sql = f"""update admin set username='{username}', phone='{phone}', DOU=(CURRENT_TIMESTAMP)
+                    where id='{self._id}'"""
+        if super().UpdateData(sql):
+            self._name = username
+            self._phone = phone
+            return ""
+        return "something went wrong"
+
+
     def ForgetPassword(self):
         user = super().GetDataAdvance(table='admin', FindKey={"email": self._email, "phone": self._phone}, get=['id'])
         print(user)
