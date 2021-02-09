@@ -62,6 +62,18 @@ class User(LoginUser, NewUser):
         print(data)
         return ChnageToDict(plan_id=data[0])
     # # ......................User Profile Update
+
+    def PlanValid(self):
+        data = super().GetDataAdvance(table='users', FindKey={"id": self._id}, get=['plan_id',"exp_date"])
+        print(data)
+        if data[0] == 0:
+            return False
+        exp_date =  datetime. strptime(data[1], '%Y-%m-%d').date()
+        print(exp_date)
+        if exp_date > datetime.now().date():
+            return True
+        return False
+
     def UpdateData(self, username="", phone="", profileImage=""):
         print("update")
         # data = db.getData(f"""Select phone from user where email='{email}'""")[0]
