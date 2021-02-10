@@ -11,8 +11,8 @@ from Packages.modules import ChnageToDict, VerifyToken
 def construct_blueprint():
     CommentsRoute = Blueprint("CommentsRoute", __name__)
 
-    @CommentsRoute.route("/movies/<movieId>/comments/<st>", methods=['GET', 'POST'])
-    def comments(movieId, st):
+    @CommentsRoute.route("/movies/<movieId>/comments/<Page>", methods=['GET', 'POST'])
+    def comments(movieId, Page):
         MovieComments = Comments(movieId=movieId)
         if request.method == 'POST':
             if VerifyToken(token=request.form['token'], secret=os.getenv('SECRET_KEY')):
@@ -22,7 +22,7 @@ def construct_blueprint():
             if not res:
                 return Response("Fail to Insert Comment")
             return Response("Inserted Comment")
-        DataDict = MovieComments.AllComments(start=int(st))
+        DataDict = MovieComments.AllComments(Page=int(Page))
         # print(data)
         # DataDict = []
         # for Id, username, userProfile, movie, comment, rating, doc in data:

@@ -10,18 +10,18 @@ class Comments(SqlDB):
         super().__init__(filename=os.getenv('DB_FILE'))
         self._movieId = movieId
 
-    def AllComments(self, start=0, limit=5):
+    def AllComments(self, start=0, Page=1, limit=5):
         # sql = f"""Select * from comments join movies on comments.movie_id = movie.id  where
         # comments.movie_id = {self._movieId}"""
         data = super().getData(f"""select * from CommentList where movie_id= {self._movieId} order by DOU desc""")
         # for Id, username, userProfile, movie, comment, rating, doc in data:
         #     DataDict.append(ChnageToDict(id=Id, comment=comment, username=username, userProfile=userProfile, doc=doc,
         #                                  rating=round(rating, 1)))
-        Comments_df = pd.DataFrame(data, columns=['id', 'comment', "username", "userProfile", "movieId", "doc", "rating"])
+        Comments_df = pd.DataFrame(data, columns=['id', "username", "userProfile", "movieId", 'comment', "rating","doc"])
         if start> Comments_df.index.stop:
             print("index out of range")
         print("stop", str(Comments_df.index))
-        Data = Comments_df[start: start+limit]
+        Data = Comments_df[start: (limit*Page)]
         print(Data.to_dict(orient="records"))
         return Data.to_dict(orient="records")
 
