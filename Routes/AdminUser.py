@@ -72,7 +72,7 @@ def construct_blueprint(uploadFolder):
                 # ................... Profile Image
                 today = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
                 filename = f"""{request.form['email']}{today}.{secure_filename(file.filename).split('.')[-1]}"""
-                filename = fileUpload(file=file, destination=f"{uploadFolder}/users",
+                filename = fileUpload(file=file, destination=f"{uploadFolder}/admin",
                                       allowed={'png', 'jpg', 'jpeg'}, filename=filename)
             except Exception as e:
                 print("No file received " + str(e))
