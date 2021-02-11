@@ -17,6 +17,8 @@ class Comments(SqlDB):
         # for Id, username, userProfile, movie, comment, rating, doc in data:
         #     DataDict.append(ChnageToDict(id=Id, comment=comment, username=username, userProfile=userProfile, doc=doc,
         #                                  rating=round(rating, 1)))
+        if not data :
+            return []
         Comments_df = pd.DataFrame(data, columns=['id', "username", "userProfile", "movieId", 'comment', "rating","doc"])
         if start> Comments_df.index.stop:
             print("index out of range")

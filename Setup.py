@@ -18,7 +18,6 @@ from Packages.Push import Make
 # Routes handling
 from Routes import Signin, Signup, ClientUser, CommentsRoute, ForgetSystem, AdminUser
 
-
 app = Flask(__name__)
 # Config upload files base path
 app.config['UPLOAD_FOLDER'] = './static'
@@ -112,6 +111,7 @@ def GetOneMovie(mid):
     A = Movies()
     return Response(json.dumps(A.Movies_Edit_Display(a=mid)), mimetype='application/json')
 
+
 @app.route('/movieuser/<mid>', methods=['GET'])
 def GetNMovie(mid):
     A = Movies()
@@ -188,6 +188,7 @@ def SearchCat(query):
         return Response(json.dumps(gen[:10]), mimetype='application/json')
     else:
         return "Nothing Found"
+
 
 @app.route('/categories/<query>', methods=['GET'])
 def Cat(query):
