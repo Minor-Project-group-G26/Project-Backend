@@ -108,7 +108,7 @@ class Admin(SqlDB):
         )
         print("Data All")
         st = page*limit
-        users_dict_list = User_df[st:st+limit].sort_values(by='name').to_dict(orient='records')
+        users_dict_list = User_df[st:st+limit].to_dict(orient='records')
         print(users_dict_list)
         return users_dict_list
 
