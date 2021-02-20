@@ -9,6 +9,7 @@ class Movies:
     def __init__(self):
         self.db = sqlite3.connect('project.db')
         self.movies_table = pd.read_sql_query("SELECT * FROM movies", self.db)
+        self.movies_table2 = pd.read_sql_query("SELECT * FROM movies", self.db)
         self.movies_genres_table = pd.read_sql_query("SELECT * FROM movies_genres", self.db)
         self.movies_actors_table = pd.read_sql_query("SELECT * FROM movies_actors", self.db)
         self.movies_directors_table = pd.read_sql_query("SELECT * FROM movies_directors", self.db)
@@ -19,6 +20,8 @@ class Movies:
         self.rating_data.movie_rating.fillna(0, inplace=True)
         self.movies_searching = pd.read_sql_query("SELECT movie_id,movies_name,movies_poster,movie_rating FROM Data",self.db)
         self.genre_searching = pd.read_sql_query("SELECT movie_id,genres_name FROM movies", self.db)
+        self.boss = self.movies_table
+        self.boss['movies_name'] = self.boss['movies_name'].str.lower()
 
     # ------------------------- Method to Convert a list into String -------------------------------------------------#
     def array_to_str(self, a):
@@ -39,7 +42,6 @@ class Movies:
     def acr_name(self, a):
         ac_name = []
         for i in a:
-            print(type(i))
             i =int(i)
             ac_name.append(self.actors_table.loc[self.actors_table.actors_id == i].actor_name.values.tolist()[0])
         self.actors_name = self.array_to_str(ac_name)
@@ -48,7 +50,6 @@ class Movies:
     def dir_name(self, a):
         dr_name = []
         for i in a:
-            print(type(i))
             i = int(i)
             dr_name.append(self.directors_table.loc[self.directors_table.directors_id == i].director_name.values.tolist()[0])
         self.directors_name = self.array_to_str(dr_name)
@@ -200,6 +201,12 @@ class Movies:
             "Rate": self.rating_data.loc[self.rating_data.movie_id == a].movie_rating.round(1).tolist()[0]
         }
 
+    def DisplayGetStarted(self):
+        getStarted = list()
+        for i in range(12):
+            getStarted.append(self.Movies_Data_Display(i))
+        return getStarted
+
     def Movies_Edit_Display(self, a):
         a = int(a)
         z = self.movies_actors_table.loc[self.movies_actors_table.movie_id == a].actors_id.to_list()
@@ -285,7 +292,9 @@ class FilterRecommend(Movies):
 class Searching(Movies):
 
     def MoviesSearch(self, ab):
-        a = self.movies_searching.loc[self.movies_searching.movies_name.str.contains(ab)].movie_id.values.tolist()
+        self.boss = self.movies_table
+        self.boss['movies_name'] = self.boss['movies_name'].str.lower()
+        a = self.movies_searching.loc[self.boss.movies_name.str.contains(ab)].movie_id.values.tolist()
         condition = self.movies_searching.movie_id.isin(a)
         self.movies_searching.columns = ['Id', 'Title', 'Poster', 'Rate']
         apple = self.movies_searching.loc[condition]
@@ -311,11 +320,13 @@ class Searching(Movies):
         return apple.to_dict(orient='records')
 
     def Movies_DB_Search(self, ab):
-        a = self.movies_table.loc[self.movies_table.movies_name.str.contains(ab)].movie_id.values.tolist()
-        condition = self.movies_table.movie_id.isin(a)
-        self.movies_table.columns = ['Id', 'Title', 'Director', 'Actor', 'Category', 'Blurb', 'Poster', 'Link']
-        return self.movies_table.loc[condition].to_dict(orient='records')
+        a = self.boss.loc[self.boss.movies_name.str.contains(ab)].movie_id.values.tolist()
+        condition = self.movies_table2.movie_id.isin(a)
+        self.movies_table2.columns = ['Id', 'Title', 'Director', 'Actor', 'Category', 'Blurb', 'Poster', 'Link']
+        print(self.movies_table2.loc[condition].to_dict(orient='records'))
+        return self.movies_table2.loc[condition].to_dict(orient='records')
 
+#-----------------------------------------Individual-----------------------------------------------------------#
 
 class Individual:
     def __init__(self):

@@ -63,6 +63,10 @@ def saveDetails():
     App = Movies()
     return Response(json.dumps(App.DisplayAll(1)), mimetype='application/json')
 
+@app.route('/getstarted', methods=['GET'])
+def getStarted():
+    gtStart = Movies()
+    return Response(json.dumps(gtStart.DisplayGetStarted()), mimetype='application/json')
 
 @app.route('/categories', methods=['POST', 'GET'])
 def setCat():
@@ -170,7 +174,7 @@ def Update():
 @app.route('/movie/search/<query>', methods=['GET'])
 def SearchMovie(query):
     element = query
-    element = element.capitalize()
+    element = element.lower()
     a = Searching()
     b = a.MoviesSearch(element)
     if len(b) != 0:
@@ -227,7 +231,7 @@ def getCount(count):
 @app.route('/movie/searchall/<query>', methods=['GET'])
 def SearchAll(query):
     Abc = Searching()
-    return Response(json.dumps(Abc.Movies_DB_Search(query)), mimetype='application/json')
+    return Response(json.dumps(Abc.Movies_DB_Search(query.lower())), mimetype='application/json')
 
 
 if __name__ == '__main__':
